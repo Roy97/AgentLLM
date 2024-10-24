@@ -14,3 +14,6 @@ ollama pull nomic-embed-text
 ```console
 flet run
 ```
+### To analyse images
+- Install Tesseract-OCR
+- Configure the PATH environment variable
