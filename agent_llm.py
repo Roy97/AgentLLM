@@ -42,7 +42,7 @@ class AgentLLM:
             system_prompt = [
                 ("system", "You are an assistant for question-answering tasks."
                             "Answer the following questions as best you can."
-                            "You have access to tools (use them only when the question matches the tool description)."
+                            "You have access to a tool (use it only when the question matches the tool description)."
                             "Provide long answers with proper formatting and detailed analysis."
                             "If you don't know the answer, just say that you don't know."
                             ),
@@ -54,7 +54,6 @@ class AgentLLM:
             prompt = ChatPromptTemplate.from_messages(system_prompt)
             tool = create_retriever_tool(retriever, "document_retriever", "Searches, analyses, and returns relevant information from the document based on the user's question")
             self.agent = create_react_agent(llm, [tool], state_modifier=prompt, checkpointer=memory)
-            #chain = ({"context": retriever | format_docs, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser())
         else:
             system_prompt = [
                 ("system", "You are a helpful and friendly assistant for question-answering tasks."
@@ -69,6 +68,7 @@ class AgentLLM:
 
             prompt = ChatPromptTemplate.from_messages(system_prompt)
             self.agent = create_react_agent(llm, [], state_modifier=prompt, checkpointer=memory)
+            #chain = ({"context": retriever | format_docs, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser())
     
     def format_docs(self, docs):
         return "\n\n".join(doc.page_content for doc in docs)

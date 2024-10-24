@@ -148,7 +148,7 @@ async def main(page: ft.Page):
         icon=ft.cupertino_icons.UPLOAD_CIRCLE,
         text="Upload file",
         on_click=lambda _:file_dialog.pick_files(
-            allowed_extensions=["pdf"],
+            allowed_extensions=["pdf", "jpg", "png", "jpeg", "svg", "tif"],
             allow_multiple=False
         )
     )
