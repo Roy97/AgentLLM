@@ -15,8 +15,8 @@ class AgentLLM:
 
     def __init__(self):
 
-        os.environ["UNSTRUCTURED_API_KEY"] = "Ifx4J2RRTUaCYXALmRcoH1ucCr70Pd"
-        os.environ["AI21_API_KEY"] = "VXgSDh46P4UWXyTXpF0PNNedEYgl9rdZ"
+        os.environ["UNSTRUCTURED_API_KEY"] = ""
+        os.environ["AI21_API_KEY"] = ""
 
         self.agent=None
         self.chat_history = []
