@@ -1,3 +1,5 @@
 # AgentLLM
-- install package dependencies from requirements.txt
+- Install package dependencies from requirements.txt
+```console
 - flet run
+```
