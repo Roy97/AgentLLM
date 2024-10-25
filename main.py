@@ -24,7 +24,7 @@ async def main(page: ft.Page):
                         expand=True,
                         controls = [
                             ft.Card(
-                                col = min(len(max(query.split("\n"), key=len))/10 + 0.5, 6),
+                                col = min(len(max(query.split("\n"), key=len))/10 + 0.5, 5),
                                 content = ft.Container(
                                     expand=True,
                                     alignment=ft.alignment.center_left,
@@ -58,7 +58,7 @@ async def main(page: ft.Page):
                     expand=True,
                     controls = [
                         ft.Card(
-                            col = min(len(max(response.split("\n"), key=len))/10 + 0.5, 6),
+                            col = min(len(max(response.split("\n"), key=len))/10 + 0.5, 5),
                             content = ft.Container(
                                 expand=True,
                                 alignment=ft.alignment.center_right,
