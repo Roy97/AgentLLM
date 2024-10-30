@@ -10,7 +10,7 @@ async def main(page: ft.Page):
             human_chat_message_text = ft.Text(
                 expand=True,
                 text_align=ft.TextAlign.START,
-            
+                selectable=True
             )
             human_chat_message = ft.Row(
                 alignment=ft.MainAxisAlignment.START,
@@ -48,6 +48,7 @@ async def main(page: ft.Page):
             expand=True,
             value=response,
             text_align=ft.TextAlign.START,
+            selectable=True
         )
         ai_chat_message = ft.Row(
             alignment=ft.MainAxisAlignment.END,

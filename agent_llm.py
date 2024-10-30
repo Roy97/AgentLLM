@@ -1,4 +1,5 @@
 import os
+from pdb import run
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate
@@ -8,6 +9,8 @@ from langchain_unstructured import UnstructuredLoader
 from langchain_ai21 import AI21SemanticTextSplitter
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain_community.document_compressors.flashrank_rerank import FlashrankRerank
+from langchain_core.tools import Tool
+from langchain_experimental.utilities import PythonREPL
 
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain.tools.retriever import create_retriever_tool
@@ -16,14 +19,20 @@ from langgraph.prebuilt import create_react_agent
 class AgentLLM:
 
     def __init__(self):
-        os.environ["UNSTRUCTURED_API_KEY"] = ""
-        os.environ["AI21_API_KEY"] = ""
+        os.environ["UNSTRUCTURED_API_KEY"] = "Ifx4J2RRTUaCYXALmRcoH1ucCr70Pd"
+        os.environ["AI21_API_KEY"] = "VXgSDh46P4UWXyTXpF0PNNedEYgl9rdZ"
 
         self.llm = ChatOllama(model="llama3.2")
         self.memory = MemorySaver()
         self.agent=None
         self.chat_history = []
         self.agent_scratchpad = []
+        python_repl = PythonREPL()
+        self.code_tool = Tool(
+            name="python_repl",
+            description="A Python shell. Use this to execute python commands. Input should be a valid python command. If you want to see the output of a value, you should print it out with `print(...)`.",
+            func=python_repl.run
+        )
     
     def RAG(self, doc_path=None):
         if doc_path:
@@ -45,7 +54,7 @@ class AgentLLM:
                 ("system", "You are an assistant for question-answering tasks."
                             "Answer the following questions as best you can."
                             "You have access to the chat history (use it to answer questions related to past conversations)."
-                            "You have access to a tool (use it only when the question matches the tool description)."
+                            "You have access to tools (use it only when the question matches the tool description)."
                             "Provide long answers with proper formatting and detailed analysis."
                             "If you don't know the answer, just say that you don't know."
                             ),
@@ -55,13 +64,14 @@ class AgentLLM:
             ]
 
             prompt = ChatPromptTemplate.from_messages(system_prompt)
-            tool = create_retriever_tool(cc_retriever, "document_retriever", "Searches, analyses, and returns relevant information from the document based on the user's question")
-            self.agent = create_react_agent(self.llm, [tool], state_modifier=prompt, checkpointer=self.memory)
+            doc_tool = create_retriever_tool(cc_retriever, "document_retriever", "Searches, analyses, and returns relevant information from the document based on the user's question")
+            self.agent = create_react_agent(self.llm, [doc_tool, self.code_tool], state_modifier=prompt, checkpointer=self.memory)
         else:
             system_prompt = [
                 ("system", "You are a helpful and friendly assistant for question-answering tasks."
                             "Answer the following questions as best you can."
                             "You have access to the chat history (use it to answer questions related to past conversations)."
+                            "You have access to a tool (use it only when the question matches the tool description)."
                             "Provide detailed answers with proper formatting."
                             "If you don't know the answer, just say that you don't know."
                             ),
@@ -71,7 +81,7 @@ class AgentLLM:
             ]
 
             prompt = ChatPromptTemplate.from_messages(system_prompt)
-            self.agent = create_react_agent(self.llm, [], state_modifier=prompt, checkpointer=self.memory)
+            self.agent = create_react_agent(self.llm, [self.code_tool], state_modifier=prompt, checkpointer=self.memory)
             #chain = ({"context": retriever | format_docs, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser())
     
     def format_docs(self, docs):
