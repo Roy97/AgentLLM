@@ -12,24 +12,24 @@ spec:
         name: ollama
     spec:
       containers:
-        - name: ollama
-          image: ollama/ollama:latest
-          ports:
+      - name: ollama
+        image: ollama/ollama:latest
+        ports:
         - name: http
           containerPort: 11434
           protocol: TCP
-      volumeMounts:
+        volumeMounts:
         - name: ollama-data
           mountPath: /data
-      lifecycle:
-        postStart:
-          exec:
-            command: ["sh", "-c"]
-            args:
-             - ollama pull llama3.2 && \
-             - ollama pull nomic-embed-text && \
-             - ollama serve
-    volumes:
+        lifecycle:
+          postStart:
+            exec:
+              command: ["sh", "-c"]
+              args:
+              - ollama pull llama3.2 && \
+              - ollama pull nomic-embed-text && \
+              - ollama serve
+      volumes:
       - name: ollama-data
         persistentVolumeClaim:
           claimName: ollama-pvc
