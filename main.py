@@ -197,4 +197,4 @@ async def main(page: ft.Page):
     page.add(chat_area)
     page.add(input_area)
 
-ft.app(port = 7000, target = main, route_url_strategy = "hash", assets_dir = "assets", view=ft.AppView.WEB_BROWSER)
+ft.app(port = 8001, target = main, host="0.0.0.0", route_url_strategy = "hash", assets_dir = "assets", view=ft.AppView.WEB_BROWSER)
