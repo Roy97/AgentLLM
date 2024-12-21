@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: agentllm
+  template:
+    metadata:
+      labels:
+        name: agentllm
+    spec:
+      containers:
+      - name: agentllm
+        image: asia-south1-docker.pkg.dev/agentllm-445104/gar-1/agentllm:latest
+        ports:
+        - name: http
+          containerPort: 8001
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentllm
+spec:
+  type: LoadBalancer
+  selector:
+    name: agentllm
+  ports:
+    - port: 80
+      name: http
+      targetPort: 8001
+      protocol: TCP

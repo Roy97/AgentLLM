@@ -15,15 +15,13 @@ from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain.tools.retriever import create_retriever_tool
 from langgraph.prebuilt import create_react_agent
 
-from llama32 import Llama32
-
 class AgentLLM:
 
     def __init__(self):
         os.environ["UNSTRUCTURED_API_KEY"] = "Ifx4J2RRTUaCYXALmRcoH1ucCr70Pd"
         os.environ["AI21_API_KEY"] = "VXgSDh46P4UWXyTXpF0PNNedEYgl9rdZ"
 
-        self.llm = ChatOllama(model="llama3.2")
+        self.llm = ChatOllama(model="llama3.2", base_url="")
         self.memory = MemorySaver()
         self.agent_store = Chroma()
         self.agent = None

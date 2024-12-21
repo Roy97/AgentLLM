@@ -21,9 +21,6 @@ spec:
         volumeMounts:
         - name: ollama-data
           mountPath: /data
-        env:
-        - name: PRELOAD_MODELS
-          value: "llama3.2 nomic-embed-text"
       volumes:
       - name: ollama-data
         persistentVolumeClaim:
