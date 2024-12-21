@@ -26,9 +26,10 @@ spec:
             exec:
               command: ["sh", "-c"]
               args:
-              - ollama pull llama3.2 && \
-              - ollama pull nomic-embed-text && \
-              - ollama serve
+              - |
+                ollama pull llama3.2 && \
+                ollama pull nomic-embed-text && \
+                ollama serve
       volumes:
       - name: ollama-data
         persistentVolumeClaim:
