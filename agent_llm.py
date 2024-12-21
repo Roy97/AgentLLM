@@ -1,5 +1,4 @@
 import os
-from pdb import run
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate
@@ -16,6 +15,8 @@ from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain.tools.retriever import create_retriever_tool
 from langgraph.prebuilt import create_react_agent
 
+from llama32 import Llama32
+
 class AgentLLM:
 
     def __init__(self):
@@ -24,7 +25,8 @@ class AgentLLM:
 
         self.llm = ChatOllama(model="llama3.2")
         self.memory = MemorySaver()
-        self.agent=None
+        self.agent_store = Chroma()
+        self.agent = None
         self.chat_history = []
         self.agent_scratchpad = []
         python_repl = PythonREPL()
@@ -65,7 +67,7 @@ class AgentLLM:
 
             prompt = ChatPromptTemplate.from_messages(system_prompt)
             doc_tool = create_retriever_tool(cc_retriever, "document_retriever", "Searches, analyses, and returns relevant information from the document based on the user's question")
-            self.agent = create_react_agent(self.llm, [doc_tool, self.code_tool], state_modifier=prompt, checkpointer=self.memory)
+            self.agent = create_react_agent(self.llm, [doc_tool, self.code_tool], state_modifier=prompt, checkpointer=self.memory, store=self.agent_store)
         else:
             system_prompt = [
                 ("system", "You are a helpful and friendly assistant for question-answering tasks."
@@ -81,7 +83,7 @@ class AgentLLM:
             ]
 
             prompt = ChatPromptTemplate.from_messages(system_prompt)
-            self.agent = create_react_agent(self.llm, [self.code_tool], state_modifier=prompt, checkpointer=self.memory)
+            self.agent = create_react_agent(self.llm, [self.code_tool], state_modifier=prompt, checkpointer=self.memory, store=self.agent_store)
             #chain = ({"context": retriever | format_docs, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser())
     
     def format_docs(self, docs):

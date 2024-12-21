@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ollama-pv
+  labels:
+    app: ollama
+spec:
+  capacity:
+    storage: 10Gi  # Adjust based on your storage needs
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/ollama-data
+    type: DirectoryOrCreate

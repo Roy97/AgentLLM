@@ -1,0 +1,44 @@
+name: Deploy Ollama to GKE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      PROJECT_ID: agentllm-445104
+      GKE_CLUSTER: cluster-1
+      GKE_ZONE: asia-southeast1-a
+      IMAGE: ollama/ollama:latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+    
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        export_default_credentials: true
+
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        gcloud components install gke-gcloud-auth-plugin
+        echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+    
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }} --project ${{ env.PROJECT_ID }}
+    
+    - name: Deploy
+      run: |
+        cd kubernetes
+        kubectl apply -f ollama-pv.yaml
+        kubectl apply -f ollama-pvc.yaml
+        kubectl apply -f ollama-deployment.yaml
