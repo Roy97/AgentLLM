@@ -25,7 +25,7 @@ jobs:
     - name: Configure Docker for Google Artifact Registry
       run: |
         echo "${{ secrets.GCP_SA_KEY }}" > key.json
-        gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=key.json
+        gcloud auth activate-service-account --key-file=key.json
         gcloud auth configure-docker asia-south1-docker.pkg.dev
         
     - name: Build and push image to GAR
