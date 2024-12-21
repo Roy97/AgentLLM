@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: ollama-pv
   labels:
-    app: ollamapv
+    app: ollama
 spec:
   capacity:
     storage: 10Gi
