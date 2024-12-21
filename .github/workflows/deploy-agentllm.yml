@@ -13,7 +13,7 @@ jobs:
       PROJECT_ID: agentllm-445104
       GKE_CLUSTER: cluster-1
       GKE_ZONE: asia-southeast1-a
-      IMAGE: asia-south1-docker.pkg.dev/agentllm-445104/gar-1/agentllm:latest
+      IMAGE: asia-south1-docker.pkg.dev/agentllm-445104/gar-1/agentllm
 
     steps:
     - name: Checkout repository
