@@ -21,17 +21,6 @@ jobs:
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-
-    - name: Configure Docker for Google Artifact Registry
-      run: |
-        echo "${{ secrets.GCP_SA_KEY }}" | jq -r . > key.json
-        gcloud auth activate-service-account --key-file=key.json
-        gcloud auth configure-docker asia-south1-docker.pkg.dev
-        
-    - name: Build and push image to GAR
-      run: |
-        docker build -t ${{ env.IMAGE }}:latest .
-        docker push ${{ env.IMAGE }}:latest
      
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
@@ -48,6 +37,15 @@ jobs:
       run: |
         gcloud components install gke-gcloud-auth-plugin
         echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+    
+    - name: Configure Docker for Google Artifact Registry
+      run: |
+        gcloud auth configure-docker asia-south1-docker.pkg.dev
+        
+    - name: Build and push image to GAR
+      run: |
+        docker build -t ${{ env.IMAGE }}:latest .
+        docker push ${{ env.IMAGE }}:latest
     
     - name: Get GKE credentials
       run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }} --project ${{ env.PROJECT_ID }}
