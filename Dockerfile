@@ -15,6 +15,7 @@ RUN apt-get update && \
     && ln -s /root/.cargo/bin/rustc /usr/local/bin/rustc \
     && ln -s /root/.cargo/bin/cargo /usr/local/bin/cargo
 RUN pip install --upgrade pip
+RUN pip install "langchain-unstructured[local]"
 RUN pip install -r requirements.txt
 EXPOSE 8001
 ENTRYPOINT ["flet", "run", "--web"]
