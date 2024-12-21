@@ -21,7 +21,7 @@ class AgentLLM:
         os.environ["UNSTRUCTURED_API_KEY"] = "Ifx4J2RRTUaCYXALmRcoH1ucCr70Pd"
         os.environ["AI21_API_KEY"] = "VXgSDh46P4UWXyTXpF0PNNedEYgl9rdZ"
 
-        self.llm = ChatOllama(model="llama3.2", base_url="http://ollama:11434")
+        self.llm = ChatOllama(model="llama3.2", base_url="http://ollama:80")
         self.memory = MemorySaver()
         self.agent_store = Chroma()
         self.agent = None
