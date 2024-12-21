@@ -27,7 +27,7 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "for model in $PRELOAD_MODELS; do ollama run $model \"\"; done"]
+              command: ["/bin/sh", "-c", "for model in $PRELOAD_MODELS; do ollama run $model; done"]
       volumes:
       - name: ollama-data
         persistentVolumeClaim:
