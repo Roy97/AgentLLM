@@ -1,4 +1,5 @@
 # AgentLLM
+## Setup instructions
 - Download and install Ollama
 - Pull the llama3.2 model
 ```console
