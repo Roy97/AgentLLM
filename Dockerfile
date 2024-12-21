@@ -11,7 +11,9 @@ RUN apt-get update && \
     && export PATH="$HOME/.cargo/bin:$PATH" \
     && rustup install stable \
     && rustup default stable \
-    && rustup update
+    && rustup update \
+    && ln -s /root/.cargo/bin/rustc /usr/local/bin/rustc \
+    && ln -s /root/.cargo/bin/cargo /usr/local/bin/cargo
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 EXPOSE 8001
