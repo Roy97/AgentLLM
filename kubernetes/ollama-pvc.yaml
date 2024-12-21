@@ -10,4 +10,5 @@ spec:
       storage: 10Gi
   selector:
     matchLabels:
-      app: ollama
+      app: ollamapv
+  storageClassName: "standard"
