@@ -1,7 +1,10 @@
+import os
 import flet as ft
 from agent_llm import AgentLLM
 
 async def main(page: ft.Page):
+
+    os.environ["FLET_SECRET_KEY"] = "secret_file_upload_key"
 
     def send_message(e):
         query = chat_input.value
@@ -78,12 +81,20 @@ async def main(page: ft.Page):
         process(False)
         page.update()
     
-    def get_file_path(e):
-        if e.files:
-            file_path = e.files[0].path.replace("\\", "/")
+    def upload_file(e):
+        upload_list = []
+        if file_dialog.result != None and file_dialog.result.files != None:
+            for f in file_dialog.result.files:
+                upload_list.append(
+                    ft.FilePickerUploadFile(
+                        f.name,
+                        upload_url=page.get_upload_url(f.name, 600),
+                    )
+                )
+            file_dialog.upload(upload_list)
             process(True)
             page.update()
-            llm_agent.RAG(file_path)
+            llm_agent.RAG("./uploads/" + e.files[0].name)
             update_filename(e.files[0].name)
     
     def update_filename(filename):
@@ -104,7 +115,12 @@ async def main(page: ft.Page):
         chat.controls.clear()
         page.update()
     
-    def clear_upload(e):
+    def clear_uploads(e):
+        dir_path = r"./uploads/"
+        for filename in os.listdir(dir_path):
+            file_path = os.path.join(dir_path, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
         llm_agent.RAG()
         upload_button.text = "Upload file"
         page.update()
@@ -144,7 +160,7 @@ async def main(page: ft.Page):
         placeholder_text="Type your query",
         on_submit=send_message
     )
-    file_dialog = ft.FilePicker(on_result=get_file_path)
+    file_dialog = ft.FilePicker(on_result=upload_file)
     upload_button = ft.CupertinoButton(
         icon=ft.cupertino_icons.UPLOAD_CIRCLE,
         text="Upload file",
@@ -155,7 +171,7 @@ async def main(page: ft.Page):
     )
     clear_upload_button = ft.CupertinoButton(
         icon = ft.cupertino_icons.CLEAR_THICK,
-        on_click=clear_upload
+        on_click=clear_uploads
     )
     send_button = ft.CupertinoFilledButton(
         col = {"xs": 6, "sm": 4, "md": 2},
@@ -197,4 +213,4 @@ async def main(page: ft.Page):
     page.add(chat_area)
     page.add(input_area)
 
-ft.app(port = 8001, target = main, host="0.0.0.0", route_url_strategy = "hash", assets_dir = "assets", view=ft.AppView.WEB_BROWSER)
+ft.app(port = 8001, target = main, route_url_strategy = "hash", assets_dir = "assets", upload_dir = "uploads", view=ft.AppView.WEB_BROWSER)

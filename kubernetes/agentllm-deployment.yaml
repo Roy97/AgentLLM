@@ -15,10 +15,15 @@ spec:
       containers:
       - name: agentllm
         image: asia-south1-docker.pkg.dev/agentllm-445104/gar-1/agentllm:latest
+        env:
+        - name: FLET_SECRET_KEY
+          value: "secret_file_upload_key"
         ports:
         - name: http
           containerPort: 8001
           protocol: TCP
+        command: ["flet"]
+        args: ["run", "--web", "--port", "8001"]
 ---
 apiVersion: v1
 kind: Service

@@ -3,6 +3,7 @@ WORKDIR /app
 COPY requirements.txt /app/
 COPY main.py /app/
 COPY agent_llm.py /app/
+ENV FLET_SECRET_KEY="secret_file_upload_key"
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
@@ -18,4 +19,4 @@ RUN pip install --upgrade pip
 RUN pip install "langchain-unstructured[local]"
 RUN pip install -r requirements.txt
 EXPOSE 8001
-ENTRYPOINT ["flet", "run", "--web"]
+ENTRYPOINT ["flet", "run", "--web", "--port", "8001"]

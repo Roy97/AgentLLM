@@ -5,11 +5,11 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_chroma import Chroma
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_unstructured import UnstructuredLoader
-from langchain_ai21 import AI21SemanticTextSplitter
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain_community.document_compressors.flashrank_rerank import FlashrankRerank
 from langchain_core.tools import Tool
 from langchain_experimental.utilities import PythonREPL
+from langchain_experimental.text_splitter import SemanticChunker
 
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain.tools.retriever import create_retriever_tool
@@ -18,8 +18,8 @@ from langgraph.prebuilt import create_react_agent
 class AgentLLM:
 
     def __init__(self):
-        os.environ["UNSTRUCTURED_API_KEY"] = "Ifx4J2RRTUaCYXALmRcoH1ucCr70Pd"
-        os.environ["AI21_API_KEY"] = "VXgSDh46P4UWXyTXpF0PNNedEYgl9rdZ"
+        os.environ["UNSTRUCTURED_API_KEY"] = ""
+        #os.environ["AI21_API_KEY"] = ""
 
         self.llm = ChatOllama(model="llama3.2", base_url="http://ollama:80")
         self.memory = MemorySaver()
@@ -40,11 +40,8 @@ class AgentLLM:
             docs = loader.load()
             embeddings = OllamaEmbeddings(model="nomic-embed-text")
             compressor = FlashrankRerank()
-            ai21_sts = AI21SemanticTextSplitter(chunk_size=10000, chunk_overlap=2000)
-            for i in docs:
-                if len(i.page_content) < 30:
-                    i.page_content = i.page_content + " " * (30 - len(i.page_content))
-            split_docs = ai21_sts.split_documents(docs)
+            sts = SemanticChunker(embeddings, min_chunk_size=10000, breakpoint_threshold_type="gradient")
+            split_docs = sts.split_documents(docs)
             filter_docs = filter_complex_metadata(split_docs, allowed_types=(str, bool, int, float))
             vector_store = Chroma.from_documents(filter_docs, embeddings)
             retriever = vector_store.as_retriever(search_type = "mmr", k=10)
