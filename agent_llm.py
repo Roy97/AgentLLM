@@ -18,9 +18,9 @@ from langgraph.prebuilt import create_react_agent
 class AgentLLM:
 
     def __init__(self):
-        
-        os.environ["UNSTRUCTURED_API_KEY"] = ""
-        #os.environ["AI21_API_KEY"] = ""
+
+        os.environ["UNSTRUCTURED_API_KEY"] = "Ifx4J2RRTUaCYXALmRcoH1ucCr70Pd"
+        #os.environ["AI21_API_KEY"] = "VXgSDh46P4UWXyTXpF0PNNedEYgl9rdZ"
 
         self.llm = ChatOllama(model="llama3.2", base_url="http://ollama:80")
         self.memory = MemorySaver()
