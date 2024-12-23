@@ -9,7 +9,7 @@ ollama pull llama3.2
 ```console
 ollama pull nomic-embed-text
 ```
-- Generate API keys for Unstructured and AI21 and add them as environment variables
+- Generate API keys for Unstructured and add as environment variables
 - Install package dependencies from requirements.txt
 - Execute
 ```console
